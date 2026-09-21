@@ -12,7 +12,8 @@
     "lint:fix": "biome check --write .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check": "npm run typecheck && npm run lint && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "deploy": "npm run build && wrangler deploy"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
@@ -21,6 +22,7 @@
     "jsdom": "^29.1.1",
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "wrangler": "^4.136.1"
   }
 }
