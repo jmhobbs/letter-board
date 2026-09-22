@@ -1,6 +1,6 @@
 import type { Point, Rect, Size } from "./geometry.ts";
 
-export type SnapEdge = "left" | "right" | "top" | "bottom";
+export type SnapEdge = "left" | "right";
 
 export interface SnapCandidateTile {
   instanceId: string;
@@ -41,8 +41,6 @@ function candidatesForNeighbor(
   const flushPositions: Array<{ position: Point; edge: SnapEdge }> = [
     { position: { x: rect.x + rect.width, y: rect.y }, edge: "left" },
     { position: { x: rect.x - draggedSize.width, y: rect.y }, edge: "right" },
-    { position: { x: rect.x, y: rect.y + rect.height }, edge: "top" },
-    { position: { x: rect.x, y: rect.y - draggedSize.height }, edge: "bottom" },
   ];
 
   return flushPositions.map(({ position, edge }) => ({

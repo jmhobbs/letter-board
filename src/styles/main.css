@@ -88,15 +88,14 @@ body {
   justify-content: center;
   min-width: 88px;
   min-height: 44px;
-  border: none;
+  border: 1px solid #cbd5e1;
+  border-bottom: 0;
   border-radius: 8px 8px 0 0;
   background: #e2e8f0;
   color: #1e293b;
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid #cbd5e1;
-  border-bottom: 0;
 }
 
 .tray-tab[hidden] {
@@ -123,4 +122,14 @@ body {
   position: fixed;
   pointer-events: none;
   z-index: 1000;
+}
+
+.board-tile--flat-left {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.board-tile--flat-right {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }

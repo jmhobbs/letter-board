@@ -55,6 +55,17 @@ describe("computeSnapPosition", () => {
     });
   });
 
+  it("does not snap to a neighbor positioned above or below, even within threshold", () => {
+    const result = computeSnapPosition(
+      { width: 64, height: 64 },
+      { x: 100, y: 166 },
+      [{ instanceId: "n2", rect: { x: 100, y: 100, width: 64, height: 64 } }],
+      { snapThresholdPx: 20 },
+    );
+
+    expect(result).toEqual({ position: { x: 100, y: 166 }, snappedTo: null });
+  });
+
   it("snaps a wider dragged tile using its own width, not a fixed width", () => {
     const result = computeSnapPosition(
       { width: 104, height: 64 },

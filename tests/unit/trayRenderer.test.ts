@@ -116,11 +116,11 @@ describe("renderTray", () => {
     expect(tray.element.contains(tray.panelElement)).toBe(true);
   });
 
-  it("labels the close tab with x and the open tab with +", () => {
+  it("labels the close tab and the open tab with distinct icons", () => {
     const tray = renderTray(config);
 
-    expect(tray.toggleButton.textContent).toBe("x");
-    expect(tray.collapsedHandleElement.textContent).toBe("+");
+    expect(tray.toggleButton.textContent).toBe("▼");
+    expect(tray.collapsedHandleElement.textContent).toBe("▲");
   });
 
   it("keeps the toggle tab outside the scrollable panel", () => {
