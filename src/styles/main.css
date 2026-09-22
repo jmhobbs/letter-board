@@ -54,6 +54,7 @@ body {
 .tray-panel--collapsed {
   max-height: 0;
   opacity: 0;
+  padding: 0;
 }
 
 .tray-group {
@@ -85,7 +86,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
+  min-width: 88px;
   min-height: 44px;
   border: none;
   border-radius: 8px 8px 0 0;
@@ -94,6 +95,8 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
+  border: 1px solid #cbd5e1;
+  border-bottom: 0;
 }
 
 .tray-tab[hidden] {

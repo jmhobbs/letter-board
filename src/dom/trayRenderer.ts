@@ -22,7 +22,7 @@ export function renderTray(config: TileSetConfig): Tray {
   const toggleButton = document.createElement("button");
   toggleButton.type = "button";
   toggleButton.className = "tray-tab tray-toggle";
-  toggleButton.textContent = "x";
+  toggleButton.textContent = "▼";
 
   for (const group of groupTilesByCategory(config)) {
     const groupElement = document.createElement("div");
@@ -55,7 +55,7 @@ export function renderTray(config: TileSetConfig): Tray {
   const collapsedHandleElement = document.createElement("button");
   collapsedHandleElement.type = "button";
   collapsedHandleElement.className = "tray-tab tray-handle";
-  collapsedHandleElement.textContent = "+";
+  collapsedHandleElement.textContent = "▲";
 
   element.appendChild(toggleButton);
   element.appendChild(panelElement);
