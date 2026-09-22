@@ -3,7 +3,10 @@ import type { TileSetConfig } from "../../src/config/types.ts";
 import type { BoardTileInstance } from "../../src/core/boardState.ts";
 import type { Rect } from "../../src/core/geometry.ts";
 import type { BoardStateStore } from "../../src/dom/boardStateStore.ts";
-import { resolveDrop } from "../../src/dom/dragController.ts";
+import {
+  computeDragVisualOpacity,
+  resolveDrop,
+} from "../../src/dom/dragController.ts";
 import type { ElementMeasurer } from "../../src/dom/measurer.ts";
 import { renderTray } from "../../src/dom/trayRenderer.ts";
 
@@ -198,5 +201,47 @@ describe("resolveDrop", () => {
 
     expect(store.moveTile).toHaveBeenCalledWith("abc", { x: 86, y: 120 });
     expect(store.addTile).not.toHaveBeenCalled();
+  });
+});
+
+describe("computeDragVisualOpacity", () => {
+  it("returns 75% opacity when the point is over the expanded tray panel", () => {
+    const tray = renderTray(config);
+    const measurer = makeFakeMeasurer(
+      new Map([[tray.panelElement, { x: 0, y: 0, width: 200, height: 400 }]]),
+    );
+
+    expect(computeDragVisualOpacity({ x: 100, y: 100 }, tray, measurer)).toBe(
+      "0.75",
+    );
+  });
+
+  it("returns full opacity when the point is outside the expanded tray panel", () => {
+    const tray = renderTray(config);
+    const measurer = makeFakeMeasurer(
+      new Map([[tray.panelElement, { x: 0, y: 0, width: 200, height: 400 }]]),
+    );
+
+    expect(computeDragVisualOpacity({ x: 500, y: 500 }, tray, measurer)).toBe(
+      "",
+    );
+  });
+
+  it("returns 75% opacity when the point is over the collapsed tray handle", () => {
+    const tray = renderTray(config);
+    tray.collapse();
+    const measurer = makeFakeMeasurer(
+      new Map([
+        [tray.panelElement, { x: 0, y: 0, width: 200, height: 400 }],
+        [
+          tray.collapsedHandleElement,
+          { x: 900, y: 900, width: 40, height: 40 },
+        ],
+      ]),
+    );
+
+    expect(computeDragVisualOpacity({ x: 910, y: 910 }, tray, measurer)).toBe(
+      "0.75",
+    );
   });
 });

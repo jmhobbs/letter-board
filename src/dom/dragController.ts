@@ -26,6 +26,14 @@ export interface DragControllerDeps {
   generateInstanceId: () => string;
 }
 
+export function computeDragVisualOpacity(
+  clientPoint: Point,
+  tray: Tray,
+  measurer: ElementMeasurer,
+): string {
+  return isOverTray(clientPoint, tray, measurer) ? "0.75" : "";
+}
+
 export function resolveDrop(
   deps: DragControllerDeps,
   session: DragSession,
@@ -113,8 +121,14 @@ export function attachDragController(deps: DragControllerDeps): void {
       return;
     }
 
-    visual.style.left = `${event.clientX - session.grabOffset.x}px`;
-    visual.style.top = `${event.clientY - session.grabOffset.y}px`;
+    const clientPoint: Point = { x: event.clientX, y: event.clientY };
+    visual.style.left = `${clientPoint.x - session.grabOffset.x}px`;
+    visual.style.top = `${clientPoint.y - session.grabOffset.y}px`;
+    visual.style.opacity = computeDragVisualOpacity(
+      clientPoint,
+      deps.tray,
+      deps.measurer,
+    );
   }
 
   function endSession(pointerId: number): void {
