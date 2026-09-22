@@ -93,6 +93,7 @@ function createGhostElement(
 export function attachDragController(deps: DragControllerDeps): void {
   const sessions = new Map<number, DragSession>();
   const visuals = new Map<number, HTMLElement>();
+  const hiddenOriginals = new Map<number, HTMLElement>();
 
   function startSession(
     pointerId: number,
@@ -112,28 +113,35 @@ export function attachDragController(deps: DragControllerDeps): void {
       return;
     }
 
-    if (session.kind === "move") {
-      const boardRect = deps.measurer.measure(deps.boardElement);
-      visual.style.left = `${event.clientX - boardRect.x - session.grabOffset.x}px`;
-      visual.style.top = `${event.clientY - boardRect.y - session.grabOffset.y}px`;
-    } else {
-      visual.style.left = `${event.clientX - session.grabOffset.x}px`;
-      visual.style.top = `${event.clientY - session.grabOffset.y}px`;
+    visual.style.left = `${event.clientX - session.grabOffset.x}px`;
+    visual.style.top = `${event.clientY - session.grabOffset.y}px`;
+  }
+
+  function endSession(pointerId: number): void {
+    sessions.delete(pointerId);
+    visuals.get(pointerId)?.remove();
+    visuals.delete(pointerId);
+    const original = hiddenOriginals.get(pointerId);
+    if (original) {
+      original.style.visibility = "";
+      hiddenOriginals.delete(pointerId);
     }
   }
 
   function onPointerUp(event: PointerEvent): void {
     const session = sessions.get(event.pointerId);
-    const visual = visuals.get(event.pointerId);
     if (!session) {
       return;
     }
-    sessions.delete(event.pointerId);
-    visuals.delete(event.pointerId);
-    if (session.kind === "spawn" && visual) {
-      visual.remove();
-    }
+    endSession(event.pointerId);
     resolveDrop(deps, session, { x: event.clientX, y: event.clientY });
+  }
+
+  function onPointerCancel(event: PointerEvent): void {
+    if (!sessions.has(event.pointerId)) {
+      return;
+    }
+    endSession(event.pointerId);
   }
 
   for (const trayTileElement of deps.tray.panelElement.querySelectorAll<HTMLElement>(
@@ -179,6 +187,11 @@ export function attachDragController(deps: DragControllerDeps): void {
       return;
     }
     const rect = deps.measurer.measure(target);
+    const ghost = createGhostElement(deps, instance.tileDefinitionId);
+    ghost.style.left = `${rect.x}px`;
+    ghost.style.top = `${rect.y}px`;
+    target.style.visibility = "hidden";
+    hiddenOriginals.set(event.pointerId, target);
     startSession(
       event.pointerId,
       target,
@@ -188,10 +201,11 @@ export function attachDragController(deps: DragControllerDeps): void {
         tileDefinitionId: instance.tileDefinitionId,
         grabOffset: { x: event.clientX - rect.x, y: event.clientY - rect.y },
       },
-      target,
+      ghost,
     );
   });
 
   window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("pointercancel", onPointerCancel);
 }
